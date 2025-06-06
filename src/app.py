@@ -10,6 +10,11 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from rutes import paciente_bp, medico_bp, user_bp, cita_bp, analisis_bp, historial_bp, farmaco_bp
+from flask_jwt_extended import JWTManager
+
+
+
 
 # from models import Person
 
@@ -18,6 +23,11 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "super-secret-key")
+jwt = JWTManager(app)
+
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -39,6 +49,13 @@ setup_commands(app)
 
 # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(user_bp, url_prefix='/api')
+app.register_blueprint(paciente_bp, url_prefix='/api')
+app.register_blueprint(medico_bp, url_prefix='/api')
+app.register_blueprint(cita_bp, url_prefix='/api')
+app.register_blueprint(analisis_bp, url_prefix='/api')
+app.register_blueprint(historial_bp, url_prefix='/api')
+app.register_blueprint(farmaco_bp, url_prefix='/api')
 
 # Handle/serialize errors like a JSON object
 
